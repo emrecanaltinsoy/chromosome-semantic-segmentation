@@ -1,0 +1,30 @@
+attention_unet:
+  mean_DSC: 0.9962723113241649
+  mean_dsc_loss: 0.003727688675835019
+cenet:
+  mean_DSC: 0.9974143107732137
+  mean_dsc_loss: 0.0025856892267862954
+deeplabv3_resnet101:
+  mean_DSC: 0.9926121618066516
+  mean_dsc_loss: 0.007387838193348476
+fcn_resnet101:
+  mean_DSC: 0.9932708924724942
+  mean_dsc_loss: 0.006729107527505784
+nested_unet:
+  mean_DSC: 0.989816210099629
+  mean_dsc_loss: 0.010183789900371007
+proposed:
+  mean_DSC: 0.9978359753177279
+  mean_dsc_loss: 0.0021640246822720484
+pspnet:
+  mean_DSC: 0.9935407425676074
+  mean_dsc_loss: 0.0064592574323926654
+resunet:
+  mean_DSC: 0.9976575019813719
+  mean_dsc_loss: 0.002342498018628075
+segnet:
+  mean_DSC: 0.9974150913102287
+  mean_dsc_loss: 0.0025849086897713797
+unet:
+  mean_DSC: 0.9949975184031895
+  mean_dsc_loss: 0.005002481596810477

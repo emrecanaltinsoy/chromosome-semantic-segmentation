@@ -1,0 +1,60 @@
+attention_unet:
+  ACC: 99.737
+  DSC: 96.9348
+  PRE: 95.4513
+  SE: 98.4652
+  SP: 99.7931
+cenet:
+  ACC: 99.7959
+  DSC: 97.5943
+  PRE: 97.1875
+  SE: 98.0045
+  SP: 99.8749
+deeplabv3_resnet101:
+  ACC: 99.333
+  DSC: 92.2137
+  PRE: 90.9416
+  SE: 93.522
+  SP: 99.5892
+fcn_resnet101:
+  ACC: 99.3919
+  DSC: 92.8616
+  PRE: 92.077
+  SE: 93.6596
+  SP: 99.6446
+nested_unet:
+  ACC: 99.8356
+  DSC: 98.0542
+  PRE: 98.0105
+  SE: 98.0979
+  SP: 99.9122
+proposed:
+  ACC: 99.8229
+  DSC: 97.9036
+  PRE: 97.8761
+  SE: 97.9311
+  SP: 99.9063
+pspnet:
+  ACC: 99.4614
+  DSC: 93.7786
+  PRE: 91.5568
+  SE: 96.1108
+  SP: 99.6092
+resunet:
+  ACC: 99.8095
+  DSC: 97.7552
+  PRE: 97.2952
+  SE: 98.2195
+  SP: 99.8796
+segnet:
+  ACC: 99.7888
+  DSC: 97.5091
+  PRE: 97.152
+  SE: 97.8688
+  SP: 99.8735
+unet:
+  ACC: 99.6414
+  DSC: 95.7987
+  PRE: 94.812
+  SE: 96.8061
+  SP: 99.7664

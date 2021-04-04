@@ -1,0 +1,13 @@
+batch_size: 2
+device: tpu
+epochs: 40
+image_size: [480, 640]
+images: datasets/raw_chromosome_data/
+init_features: 32
+logs: ./output/raw_chromosome/raw_chromosome-deeplabv3_resnet101-20210325T2043/logs
+lr: 0.0001
+model: deeplabv3_resnet101
+pretrained: false
+test: ./output/raw_chromosome/raw_chromosome-deeplabv3_resnet101-20210325T2043/test
+weights: ./output/raw_chromosome/raw_chromosome-deeplabv3_resnet101-20210325T2043/weights
+workers: 0

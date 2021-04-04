@@ -1,0 +1,13 @@
+batch_size: 2
+device: cuda:0
+epochs: 40
+image_size: [480, 640]
+images: datasets/raw_chromosome_data/
+init_features: 32
+logs: ./output/raw_chromosome/raw_chromosome-cenet-20210322T2115/logs
+lr: 0.0001
+model: cenet
+pretrained: false
+test: ./output/raw_chromosome/raw_chromosome-cenet-20210322T2115/test
+weights: ./output/raw_chromosome/raw_chromosome-cenet-20210322T2115/weights
+workers: 0
