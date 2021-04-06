@@ -19,7 +19,7 @@ from models.PSPNet import PSPNet
 
 from ptflops import get_model_complexity_info
 
-flops = []
+macs = []
 params_ =[]
 
 models = ['unet', 'resunet', 'proposed', 'cenet', 'segnet', 'nested_unet', 'attention_unet', 'fcn_resnet101', 'deeplabv3_resnet101', 'pspnet']
@@ -47,13 +47,13 @@ for m in models:
         model = PSPNet(num_classes=3, pretrained=False, backend='resnet101')
 
     print(m)
-    flop, param = get_model_complexity_info(model, (1, 480, 640), as_strings=True,
+    mac, param = get_model_complexity_info(model, (1, 480, 640), as_strings=True,
                                             print_per_layer_stat=False, verbose=False)
   
-    flops.append(flop)
+    macs.append(mac)
     params_.append(param)
 
-print('{:<25}  {:<15}  {:<10}'.format('Model', 'MACS', 'PARAMS'))
+print('{:<25}  {:<15}  {:<10}'.format('Model', 'MACs', 'Params'))
 print('-'*50)
 for i in range(len(models)):
-    print('{:<25}  {:<15}  {:<10}'.format(models[i], flops[i], params_[i]))
+    print('{:<25}  {:<15}  {:<10}'.format(models[i], macs[i], params_[i]))

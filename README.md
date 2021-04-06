@@ -54,7 +54,7 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 ![val_loss](./assets/val_loss.png)
 
 ## Overall Evaluation Metrics
-|          Model          |  Params |    Flops    | Dice (%) |  Se (%) |  Sp (%) | Pre (%) | Acc (%) |
+|          Model          |  Params |     MACs    | Dice (%) |  Se (%) |  Sp (%) | Pre (%) | Acc (%) |
 |:-----------------------:|:-------:|:-----------:|:--------:|:-------:|:-------:|:-------:|:-------:|
 |          U-Net          |  7.76 M |  64.24 GMac |  99.4998 | 99.5379 | 99.7306 | 99.4616 | 99.6664 |
 |      Residual U-Net     |  8.11 M |  67.39 GMac |  99.7657 | 99.7649 | 99.8833 | 99.7666 | 99.8438 |
