@@ -69,16 +69,13 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 
 ## Threshold DSC Scores (Grid Search, Search Best)
 
-![unet_threshold_fig](./assets/threshold_figures/unet.png)
-![resunet_threshold_fig](./assets/threshold_figures/resunet.png)
-![nested_unet_threshold_fig](./assets/threshold_figures/nested_unet.png)
-![attention_unet_threshold_fig](./assets/threshold_figures/attention_unet.png)
-![cenet_threshold_fig](./assets/threshold_figures/cenet.png)
-![segnet_threshold_fig](./assets/threshold_figures/segnet.png)
-![fcn_resnet101_threshold_fig](./assets/threshold_figures/fcn_resnet101.png)
-![deeplabv3_resnet101_threshold_fig](./assets/threshold_figures/deeplabv3_resnet101.png)
-![pspnet_threshold_fig](./assets/threshold_figures/pspnet.png)
-![proposed_cnn_threshold_fig](./assets/threshold_figures/proposed_cnn.png)
+|  |  |
+|:-----------------------:|:-----------------------:|
+| ![](./assets/threshold_figures/unet.png) | ![](./assets/threshold_figures/resunet.png) |
+| ![](./assets/threshold_figures/nested_unet.png) | ![](./assets/threshold_figures/attention_unet.png) |
+| ![](./assets/threshold_figures/cenet.png) | ![](./assets/threshold_figures/segnet.png) |
+| ![](./assets/threshold_figures/fcn_resnet101.png) | ![](./assets/threshold_figures/deeplabv3_resnet101.png) |
+| ![](./assets/threshold_figures/pspnet.png) | ![](./assets/threshold_figures/proposed_cnn.png) |
 
 ## Final Evaluation Metrics
 |            Model            | Dice (%) |  Se (%) |  Sp (%) | Pre (%) | Acc (%) |
