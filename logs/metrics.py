@@ -22,7 +22,7 @@ def main(args):
         print('-'*75)
 
     for i in range(len(yaml_files)):
-        net_name = yaml_files[i].split('\\')[2]
+        net_name = yaml_files[i].split('\\')[-2]
         with open(yaml_files[i]) as f:
             scores = yaml.load(f, Loader=yaml.FullLoader)
             dsc_scores[net_name] = scores
@@ -95,13 +95,13 @@ def main(args):
         if args.print_vals == 'metrics':
             print('{:<25}  {:<10}  {:<10}  {:<10}  {:<10}  {:<10}'.format(net_name, DSC, SE, SP, PRE, ACC)) #ch1_DSC, 
 
-    with open(os.path.join('dsc_scores.yaml'), "w") as fp:
+    with open(os.path.join('logs/dsc_scores.yaml'), "w") as fp:
         yaml.dump(dsc_scores, fp)
 
-    with open(os.path.join('evals.yaml'), "w") as fp:
+    with open(os.path.join('logs/evals.yaml'), "w") as fp:
         yaml.dump(evals, fp)
 
-    with open(os.path.join(f'metrics-{args.eval_type}.yaml'), "w") as fp:
+    with open(os.path.join(f'logs/metrics-{args.eval_type}.yaml'), "w") as fp:
         yaml.dump(metrics, fp)
 
 if __name__ == '__main__':

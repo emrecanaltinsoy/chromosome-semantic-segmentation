@@ -15,7 +15,7 @@ def main(args):
 
     fig, ax = plt.subplots(1, 1)
     for i in range(len(files)):
-        names.append(files[i].split('\\')[2])
+        names.append(files[i].split('\\')[-2])
         with open(files[i]) as f:
             losses = yaml.load(f, Loader=yaml.FullLoader)
             sns.lineplot(data=losses[args.plot_loss], linewidth=5, linestyle='-', palette='flare')
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--plot-loss",
         type=str,
-        default='loss',
+        default='val_loss',
         help="choose which values to print [loss, val_loss] (default: loss)",
     )
     args = parser.parse_args()

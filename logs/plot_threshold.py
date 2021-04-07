@@ -29,11 +29,11 @@ def main():
         short_y_axis = []
         for _, key in enumerate(grid_scores):
             grid_x_axis.append(key)
-            grid_y_axis.append(grid_scores[key]['DSC']*100)
+            grid_y_axis.append(grid_scores[key]['DSC'])
 
         for _, key in enumerate(short_range_scores):
             short_x_axis.append(key)
-            short_y_axis.append(short_range_scores[key]['DSC']*100)
+            short_y_axis.append(short_range_scores[key]['DSC'])
             
         sns.lineplot(ax=axes[0], x=grid_x_axis, y=grid_y_axis, linewidth=5, linestyle='-', palette='flare')
         sns.lineplot(ax=axes[1], x=short_x_axis, y=short_y_axis, linewidth=5, linestyle='-', palette='flare')

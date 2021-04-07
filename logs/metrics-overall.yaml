@@ -28,7 +28,7 @@ nested_unet:
   PRE: 99.8128
   SE: 98.1763
   SP: 99.9079
-proposed:
+proposed_cnn:
   ACC: 99.8557
   DSC: 99.7836
   PRE: 99.7802

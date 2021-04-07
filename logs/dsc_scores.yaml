@@ -13,7 +13,7 @@ fcn_resnet101:
 nested_unet:
   mean_DSC: 0.989816210099629
   mean_dsc_loss: 0.010183789900371007
-proposed:
+proposed_cnn:
   mean_DSC: 0.9978359753177279
   mean_dsc_loss: 0.0021640246822720484
 pspnet:
