@@ -98,6 +98,7 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 |      Proposed CNN + BCN     |  98.735  | 98.6783 | 99.9467 | 98.7918 | 99.8931 |
 
 ## Comparisons
-|          Image 1          |  Image 2 |     Image 3    |  Image 4 |
-|:-----------------------:|:-------:|:-----------:|:--------:|
-| ![0_image](./assets/comparison/original_images/0_image.png) | ![10_image](./assets/comparison/original_images/10_image.png) | ![12_image](./assets/comparison/original_images/12_image.png) | ![18_image](./assets/comparison/original_images/18_image.png) |
+| Method |          Image 1          |  Image 2 |     Image 3    |  Image 4 |
+|:-----------------------:|:-----------------------:|:-------:|:-----------:|:--------:|
+| Original Image | ![](./assets/comparison/original_images/0_image.png) | ![](./assets/comparison/original_images/10_image.png) | ![](./assets/comparison/original_images/12_image.png) | ![](./assets/comparison/original_images/18_image.png) |
+| Local Adaptive Thresholding |![](./assets/comparison/adaptive_thresholding/0_adaptive_gaussian.png) | ![](./assets/comparison/adaptive_thresholding/10_adaptive_gaussian.png) | ![](./assets/comparison/adaptive_thresholding/12_adaptive_gaussian.png) | ![](./assets/comparison/adaptive_thresholding/18_adaptive_gaussian.png) |
