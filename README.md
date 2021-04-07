@@ -50,8 +50,8 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 
 # Results
 
-![loss](./assets/loss.png)
-![val_loss](./assets/val_loss.png)
+![loss](./assets/losses/loss.png)
+![val_loss](./assets/losses/val_loss.png)
 
 ## Overall Evaluation Metrics
 |          Model          |  Params |     MACs    | Dice (%) |  Se (%) |  Sp (%) | Pre (%) | Acc (%) |
@@ -96,3 +96,6 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 |        PSPNet (t=180)       |  95.2566 | 95.1396 | 99.7966 |  95.386 | 99.6006 |
 |     Proposed CNN (t=131)    |  98.0006 | 97.9824 | 99.9121 | 98.0316 |  99.832 |
 |      Proposed CNN + BCN     |  98.735  | 98.6783 | 99.9467 | 98.7918 | 99.8931 |
+
+## Comparisons
+| ![0_image](./assets/comparison/original_images/0_image.png) | ![10_image](./assets/comparison/original_images/10_image.png) | ![12_image](./assets/comparison/original_images/12_image.png) | ![18_image](./assets/comparison/original_images/18_image.png) |
