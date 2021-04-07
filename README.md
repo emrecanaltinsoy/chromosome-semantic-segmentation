@@ -50,8 +50,9 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 
 # Results
 
-![loss](./assets/losses/loss.png)
-![val_loss](./assets/losses/val_loss.png)
+|  |  |
+|:-----------------------:|:-----------------------:|
+| ![loss](./assets/losses/loss.png) | ![val_loss](./assets/losses/val_loss.png) |
 
 ## Overall Evaluation Metrics
 |          Model          |  Params |     MACs    | Dice (%) |  Se (%) |  Sp (%) | Pre (%) | Acc (%) |
