@@ -44,7 +44,7 @@ for m in models:
     elif m == 'pspnet':
         model = PSPNet(num_classes=3, pretrained=False, backend='resnet101')
 
-    writer = SummaryWriter(f"logs/graphs/aa")
+    writer = SummaryWriter(f"logs/graphs/{m}")
 
     data = torch.zeros([2, 1, 480, 640])
     writer.add_graph(model, data)
