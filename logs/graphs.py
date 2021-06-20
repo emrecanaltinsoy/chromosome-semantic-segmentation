@@ -20,33 +20,43 @@ from models.Unet_nested import UNet_Nested
 from models.DeepLabV3 import Deeplabv3_ResNet101
 from models.PSPNet import PSPNet
 
-models = ['unet', 'resunet', 'proposed_cnn', 'cenet', 'segnet', 'nested_unet', 'attention_unet', 'fcn_resnet101', 'deeplabv3_resnet101', 'pspnet']
+models = [
+    "unet",
+    "resunet",
+    "proposed_cnn",
+    "cenet",
+    "segnet",
+    "nested_unet",
+    "attention_unet",
+    "fcn_resnet101",
+    "deeplabv3_resnet101",
+    "pspnet",
+]
 
 for m in models:
-    if m == 'unet':
+    if m == "unet":
         model = UNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'resunet':
+    elif m == "resunet":
         model = ResUNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'proposed_cnn':
+    elif m == "proposed_cnn":
         model = PreactResUNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'cenet':
+    elif m == "cenet":
         model = CE_Net(in_channels=1, num_classes=3)
-    elif m == 'segnet':
+    elif m == "segnet":
         model = SegNet(in_channels=1, num_classes=3)
-    elif m == 'nested_unet':
+    elif m == "nested_unet":
         model = UNet_Nested(in_channels=1, num_classes=3)
-    elif m == 'attention_unet':
+    elif m == "attention_unet":
         model = AttU_Net(in_channels=1, num_classes=3)
-    elif m == 'fcn_resnet101':
+    elif m == "fcn_resnet101":
         model = FCN_ResNet101(in_channels=1, num_classes=3, pretrained=False)
-    elif m == 'deeplabv3_resnet101':
+    elif m == "deeplabv3_resnet101":
         model = Deeplabv3_ResNet101(in_channels=1, num_classes=3, pretrained=False)
-    elif m == 'pspnet':
-        model = PSPNet(num_classes=3, pretrained=False, backend='resnet101')
+    elif m == "pspnet":
+        model = PSPNet(num_classes=3, pretrained=False, backend="resnet101")
 
     writer = SummaryWriter(f"logs/graphs/{m}")
 
     data = torch.zeros([2, 1, 480, 640])
     writer.add_graph(model, data)
     writer.close()
-    

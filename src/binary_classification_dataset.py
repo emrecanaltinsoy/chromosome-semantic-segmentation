@@ -18,12 +18,13 @@ import pandas as pd
 
 from utils import adjustData
 
+
 class ChromoNonChromoDataset(Dataset):
 
     in_channels = 4
     out_channels = 2
     now = datetime.datetime.now()
-    name = 'binary_classification'
+    name = "binary_classification"
 
     def __init__(
         self,
@@ -39,19 +40,19 @@ class ChromoNonChromoDataset(Dataset):
         print("reading {} data...".format(subset))
 
         df = pd.read_csv(file_dir)
-        areas = list(df['area'])
-        conv_hull_area = list(df['conv_hull_area'])
-        average_label1_pixel = list(df['average_label1_pixel'])
-        average_label2_pixel = list(df['average_label2_pixel'])
-        classes = list(df['obj_id'])
-        
+        areas = list(df["area"])
+        conv_hull_area = list(df["conv_hull_area"])
+        average_label1_pixel = list(df["average_label1_pixel"])
+        average_label2_pixel = list(df["average_label2_pixel"])
+        classes = list(df["obj_id"])
+
         areas_npy = np.array(areas)
         conv_hull_area_npy = np.array(conv_hull_area)
         average_label1_pixel_npy = np.array(average_label1_pixel)
         average_label2_pixel_npy = np.array(average_label2_pixel)
         classes_npy = np.array(classes)
-        
-        if self.subset != 'test':
+
+        if self.subset != "test":
             indices = np.arange(classes_npy.shape[0])
             np.random.seed(seed)
             np.random.shuffle(indices)
@@ -61,13 +62,21 @@ class ChromoNonChromoDataset(Dataset):
             average_label2_pixel_npy = average_label2_pixel_npy[indices]
             classes_npy = classes_npy[indices]
 
-        data = np.stack([areas_npy,conv_hull_area_npy,average_label1_pixel_npy,average_label2_pixel_npy],axis=1)
+        data = np.stack(
+            [
+                areas_npy,
+                conv_hull_area_npy,
+                average_label1_pixel_npy,
+                average_label2_pixel_npy,
+            ],
+            axis=1,
+        )
 
         self.len = len(classes_npy)
 
         self.classes_tensor = torch.from_numpy(classes_npy)
         self.data_tensor = torch.from_numpy(data)
-        
+
         print("done creating {} dataset".format(subset))
 
     def __len__(self):

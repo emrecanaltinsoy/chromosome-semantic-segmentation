@@ -20,31 +20,34 @@ from pytorch_model_summary import summary
 from models.Classification_model import classification_model
 from binary_classification_dataset import ChromoNonChromoDataset as Dataset
 
+
 def main(args):
-    args.weights_path = 'classification_model-20210401T1305'
+    args.weights_path = "classification_model-20210401T1305"
     args.weight_num = 41
-    
+
     if not args.weights_path:
-        print('Choose weights path')
+        print("Choose weights path")
         sys.exit()
     if not args.weight_num:
-        print('Choose a weight number')
+        print("Choose a weight number")
         sys.exit()
-            
-    weight_path = 'output/{}/{}/weights'.format(Dataset.name, args.weights_path)
+
+    weight_path = "output/{}/{}/weights".format(Dataset.name, args.weights_path)
 
     device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
 
-    model = classification_model(Dataset.in_channels, Dataset.out_channels, [200,100,50,25,5])
+    model = classification_model(
+        Dataset.in_channels, Dataset.out_channels, [200, 100, 50, 25, 5]
+    )
     model.to(device)
-    
+
     try:
-        model_name = glob(weight_path + '/epoch-{}*'.format(args.weight_num))[0]
+        model_name = glob(weight_path + "/epoch-{}*".format(args.weight_num))[0]
         state_dict = torch.load(model_name, map_location=device)
     except:
         print("Weight file is not found!")
         sys.exit()
-    
+
     model.load_state_dict(state_dict)
     model.eval()
 
@@ -52,8 +55,8 @@ def main(args):
     total_loss = []
 
     loader_set = data_loaders(args)
-    loaders = {'test': loader_set}
-    
+    loaders = {"test": loader_set}
+
     correct = 0
     total = 0
     test_img_num = 0
@@ -62,9 +65,11 @@ def main(args):
     true_nonchromosome = 0
     false_nonchromosome = 0
 
-    for i, datum in enumerate(loaders['test'], 0):
+    for i, datum in enumerate(loaders["test"], 0):
         data, y_true = datum
-        data, y_true = data.to(device, dtype=torch.float), y_true.to(device, dtype=torch.float)
+        data, y_true = data.to(device, dtype=torch.float), y_true.to(
+            device, dtype=torch.float
+        )
 
         with torch.set_grad_enabled(False):
             y_pred = model(data)
@@ -96,10 +101,13 @@ def main(args):
                 test_img_num += 1
 
             total_loss.append(loss.item())
-        
-    print(f'mean loss={np.mean(total_loss)}')
-    print(f'Accuracy = {(100 * correct / total)} %%')
-    print(f'TC = {true_chromosome}, FC = {false_chromosome}, TNC = {true_nonchromosome}, FNC = {false_nonchromosome}')
+
+    print(f"mean loss={np.mean(total_loss)}")
+    print(f"Accuracy = {(100 * correct / total)} %%")
+    print(
+        f"TC = {true_chromosome}, FC = {false_chromosome}, TNC = {true_nonchromosome}, FNC = {false_nonchromosome}"
+    )
+
 
 def data_loaders(args):
     dataset_test = datasets(args)
@@ -111,12 +119,11 @@ def data_loaders(args):
     )
     return loader_test
 
+
 def datasets(args):
-    test = Dataset(
-        file_dir=args.test_data,
-        subset="test"
-    )
+    test = Dataset(file_dir=args.test_data, subset="test")
     return test
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -153,22 +160,14 @@ if __name__ == "__main__":
         help="number of workers for data loading (default: 0)",
     )
     parser.add_argument(
-        "--weights-path", 
-        type=str, 
-        default=None, 
-        help="path where the weights are"
+        "--weights-path", type=str, default=None, help="path where the weights are"
     )
+    parser.add_argument("--weight-num", type=str, default=None, help="weight number")
     parser.add_argument(
-        "--weight-num", 
-        type=str, 
-        default=None, 
-        help="weight number"
-    )
-    parser.add_argument(
-        "--test-data", 
-        type=str, 
-        default="./datasets/binary_classification_data/test_data.csv", 
-        help="directory of validation data"
+        "--test-data",
+        type=str,
+        default="./datasets/binary_classification_data/test_data.csv",
+        help="directory of validation data",
     )
     args = parser.parse_args()
     main(args)

@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class ResUNet(nn.Module):
     def __init__(self, in_channels=3, num_classes=1, init_features=32):
         super(ResUNet, self).__init__()
@@ -17,18 +18,28 @@ class ResUNet(nn.Module):
 
         self.bottleneck = ResidualBlock(features * 8, features * 16)
 
-        self.upconv4 = nn.ConvTranspose2d(features * 16, features * 8, kernel_size=2, stride=2)
+        self.upconv4 = nn.ConvTranspose2d(
+            features * 16, features * 8, kernel_size=2, stride=2
+        )
         self.decoder4 = ResidualBlock((features * 8) * 2, features * 8)
-        self.upconv3 = nn.ConvTranspose2d(features * 8, features * 4, kernel_size=2, stride=2)
+        self.upconv3 = nn.ConvTranspose2d(
+            features * 8, features * 4, kernel_size=2, stride=2
+        )
         self.decoder3 = ResidualBlock((features * 4) * 2, features * 4)
-        self.upconv2 = nn.ConvTranspose2d(features * 4, features * 2, kernel_size=2, stride=2)
+        self.upconv2 = nn.ConvTranspose2d(
+            features * 4, features * 2, kernel_size=2, stride=2
+        )
         self.decoder2 = ResidualBlock((features * 2) * 2, features * 2)
-        self.upconv1 = nn.ConvTranspose2d(features * 2, features, kernel_size=2, stride=2)
+        self.upconv1 = nn.ConvTranspose2d(
+            features * 2, features, kernel_size=2, stride=2
+        )
         self.decoder1 = ResidualBlock(features * 2, features)
 
-        self.conv = nn.Conv2d(in_channels=features, out_channels=num_classes, kernel_size=1)
+        self.conv = nn.Conv2d(
+            in_channels=features, out_channels=num_classes, kernel_size=1
+        )
 
-    net_name = 'resunet'
+    net_name = "resunet"
 
     def forward(self, x):
         enc1 = self.encoder1(x)
@@ -53,23 +64,38 @@ class ResUNet(nn.Module):
         dec1 = self.upconv1(dec2)
         dec1 = torch.cat((dec1, enc1), dim=1)
         dec1 = self.decoder1(dec1)
-        
+
         dec1 = self.conv(dec1)
         out1 = torch.sigmoid(dec1)
 
         return out1
 
+
 def downsample(in_channels, out_channels, stride=1):
-    return nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False)
+    return nn.Conv2d(
+        in_channels, out_channels, kernel_size=1, stride=stride, bias=False
+    )
+
 
 class ResidualBlock(nn.Module):
-
     def __init__(self, in_channels, features):
         super(ResidualBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=features, kernel_size=3, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(
+            in_channels=in_channels,
+            out_channels=features,
+            kernel_size=3,
+            padding=1,
+            bias=False,
+        )
         self.bn1 = nn.BatchNorm2d(num_features=features)
         self.relu1 = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(in_channels=features, out_channels=features, kernel_size=3, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(
+            in_channels=features,
+            out_channels=features,
+            kernel_size=3,
+            padding=1,
+            bias=False,
+        )
         self.bn2 = nn.BatchNorm2d(num_features=features)
         self.downsample = downsample(in_channels, features, stride=1)
         self.relu2 = nn.ReLU(inplace=True)
@@ -83,7 +109,7 @@ class ResidualBlock(nn.Module):
         out = self.bn2(out)
 
         identity = self.downsample(x)
-        
+
         out += identity
         out = self.relu2(out)
 

@@ -20,40 +20,52 @@ from models.PSPNet import PSPNet
 from ptflops import get_model_complexity_info
 
 macs = []
-params_ =[]
+params_ = []
 
-models = ['unet', 'resunet', 'proposed', 'cenet', 'segnet', 'nested_unet', 'attention_unet', 'fcn_resnet101', 'deeplabv3_resnet101', 'pspnet']
+models = [
+    "unet",
+    "resunet",
+    "proposed",
+    "cenet",
+    "segnet",
+    "nested_unet",
+    "attention_unet",
+    "fcn_resnet101",
+    "deeplabv3_resnet101",
+    "pspnet",
+]
 
 for m in models:
-    if m == 'unet':
+    if m == "unet":
         model = UNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'resunet':
+    elif m == "resunet":
         model = ResUNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'proposed':
+    elif m == "proposed":
         model = PreactResUNet(in_channels=1, num_classes=3, init_features=32)
-    elif m == 'cenet':
+    elif m == "cenet":
         model = CE_Net(in_channels=1, num_classes=3)
-    elif m == 'segnet':
+    elif m == "segnet":
         model = SegNet(in_channels=1, num_classes=3)
-    elif m == 'nested_unet':
+    elif m == "nested_unet":
         model = UNet_Nested(in_channels=1, num_classes=3)
-    elif m == 'attention_unet':
+    elif m == "attention_unet":
         model = AttU_Net(in_channels=1, num_classes=3)
-    elif m == 'fcn_resnet101':
+    elif m == "fcn_resnet101":
         model = FCN_ResNet101(in_channels=1, num_classes=3, pretrained=False)
-    elif m == 'deeplabv3_resnet101':
+    elif m == "deeplabv3_resnet101":
         model = Deeplabv3_ResNet101(in_channels=1, num_classes=3, pretrained=False)
-    elif m == 'pspnet':
-        model = PSPNet(num_classes=3, pretrained=False, backend='resnet101')
+    elif m == "pspnet":
+        model = PSPNet(num_classes=3, pretrained=False, backend="resnet101")
 
     print(m)
-    mac, param = get_model_complexity_info(model, (1, 480, 640), as_strings=True,
-                                            print_per_layer_stat=False, verbose=False)
-  
+    mac, param = get_model_complexity_info(
+        model, (1, 480, 640), as_strings=True, print_per_layer_stat=False, verbose=False
+    )
+
     macs.append(mac)
     params_.append(param)
 
-print('{:<25}  {:<15}  {:<10}'.format('Model', 'MACs', 'Params'))
-print('-'*50)
+print("{:<25}  {:<15}  {:<10}".format("Model", "MACs", "Params"))
+print("-" * 50)
 for i in range(len(models)):
-    print('{:<25}  {:<15}  {:<10}'.format(models[i], macs[i], params_[i]))
+    print("{:<25}  {:<15}  {:<10}".format(models[i], macs[i], params_[i]))

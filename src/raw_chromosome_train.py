@@ -29,49 +29,91 @@ from models.Unet_nested import UNet_Nested
 from models.DeepLabV3 import Deeplabv3_ResNet101
 from models.PSPNet import PSPNet
 
-def main(args):
-    if args.model == 'unet':
-        model = UNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=args.init_features)
-        net_name = 'unet'
-    elif args.model == 'resunet':
-        model = ResUNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=args.init_features)
-        net_name = 'resunet'
-    elif args.model == 'preactivation_resunet':
-        model = PreactResUNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=args.init_features)
-        net_name = 'preactivation_resunet'
-    elif args.model == 'cenet':
-        model = CE_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'cenet'
-    elif args.model == 'segnet':
-        model = SegNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'segnet'
-    elif args.model == 'nested_unet':
-        model = UNet_Nested(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'nested_unet'
-    elif args.model == 'attention_unet':
-        model = AttU_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'attention_unet'
-    elif args.model == 'fcn_resnet101':
-        model = FCN_ResNet101(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, pretrained=args.pretrained)
-        net_name = 'fcn_resnet101'
-    elif args.model == 'deeplabv3_resnet101':
-        model = Deeplabv3_ResNet101(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, pretrained=args.pretrained)
-        net_name = 'deeplabv3_resnet101'
-    elif args.model == 'pspnet':
-        model = PSPNet(num_classes=Dataset.num_classes, pretrained=args.pretrained, backend='resnet101')
-        net_name = 'pspnet'
 
-    print(summary(model, torch.zeros((1, 1, Dataset.img_size[0], Dataset.img_size[1])), show_input=False, show_hierarchical=False))
-    #print('number of parameters = ', sum(p.numel() for p in model.parameters()))
+def main(args):
+    if args.model == "unet":
+        model = UNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=args.init_features,
+        )
+        net_name = "unet"
+    elif args.model == "resunet":
+        model = ResUNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=args.init_features,
+        )
+        net_name = "resunet"
+    elif args.model == "preactivation_resunet":
+        model = PreactResUNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=args.init_features,
+        )
+        net_name = "preactivation_resunet"
+    elif args.model == "cenet":
+        model = CE_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
+        net_name = "cenet"
+    elif args.model == "segnet":
+        model = SegNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
+        net_name = "segnet"
+    elif args.model == "nested_unet":
+        model = UNet_Nested(
+            in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
+        )
+        net_name = "nested_unet"
+    elif args.model == "attention_unet":
+        model = AttU_Net(
+            in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
+        )
+        net_name = "attention_unet"
+    elif args.model == "fcn_resnet101":
+        model = FCN_ResNet101(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            pretrained=args.pretrained,
+        )
+        net_name = "fcn_resnet101"
+    elif args.model == "deeplabv3_resnet101":
+        model = Deeplabv3_ResNet101(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            pretrained=args.pretrained,
+        )
+        net_name = "deeplabv3_resnet101"
+    elif args.model == "pspnet":
+        model = PSPNet(
+            num_classes=Dataset.num_classes,
+            pretrained=args.pretrained,
+            backend="resnet101",
+        )
+        net_name = "pspnet"
+
+    print(
+        summary(
+            model,
+            torch.zeros((1, 1, Dataset.img_size[0], Dataset.img_size[1])),
+            show_input=False,
+            show_hierarchical=False,
+        )
+    )
+    # print('number of parameters = ', sum(p.numel() for p in model.parameters()))
     device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
     model.to(device)
 
     if args.weights == "":
-        args.weights = "./output/{}/{}-{:%Y%m%dT%H%M}/weights".format(Dataset.name, model.net_name, Dataset.now)
+        args.weights = "./output/{}/{}-{:%Y%m%dT%H%M}/weights".format(
+            Dataset.name, model.net_name, Dataset.now
+        )
     if args.logs == "":
-        args.logs = "./output/{}/{}-{:%Y%m%dT%H%M}/logs".format(Dataset.name, model.net_name, Dataset.now)
+        args.logs = "./output/{}/{}-{:%Y%m%dT%H%M}/logs".format(
+            Dataset.name, model.net_name, Dataset.now
+        )
     if args.test == "":
-        args.test = "./output/{}/{}-{:%Y%m%dT%H%M}/test".format(Dataset.name, model.net_name, Dataset.now)
+        args.test = "./output/{}/{}-{:%Y%m%dT%H%M}/test".format(
+            Dataset.name, model.net_name, Dataset.now
+        )
 
     make_dirs(args)
     save_args(args)
@@ -101,8 +143,8 @@ def main(args):
     dsc_train = []
     dsc_valid = []
 
-    for epoch in range(1, args.epochs+1):
-        
+    for epoch in range(1, args.epochs + 1):
+
         for phase in phases:
             if phase == "train":
                 model.train()
@@ -110,14 +152,16 @@ def main(args):
                 model.eval()
 
             for i, data in enumerate(loaders[phase], 0):
-                
+
                 x, y_true = data
 
                 if phase == "train":
                     step += 1
                     epoch_step += 1
 
-                x, y_true = x.to(device, dtype=torch.float), y_true.to(device, dtype=torch.float)
+                x, y_true = x.to(device, dtype=torch.float), y_true.to(
+                    device, dtype=torch.float
+                )
 
                 optimizer.zero_grad()
 
@@ -128,7 +172,7 @@ def main(args):
                     dsc_ = 1 - dsc_loss
 
                     jaccard_distance = jaccard_distance_loss(y_pred, y_true)
-                    
+
                     orig_loss_name = "dsc_loss"
                     orig_loss = dsc_loss
 
@@ -152,11 +196,17 @@ def main(args):
                         optimizer.step()
                         if (step) % 4 == 0:
                             train_step += 1
-                            print('Epoch={}/{}, step={}, orig_loss={}, DSC={}, dsc_loss={}, jaccard_distance={}'.format(epoch,args.epochs,epoch_step,
-                                                                                                                        orig_loss.item(),
-                                                                                                                        dsc_.item(),
-                                                                                                                        dsc_loss.item(),
-                                                                                                                        jaccard_distance.item()))
+                            print(
+                                "Epoch={}/{}, step={}, orig_loss={}, DSC={}, dsc_loss={}, jaccard_distance={}".format(
+                                    epoch,
+                                    args.epochs,
+                                    epoch_step,
+                                    orig_loss.item(),
+                                    dsc_.item(),
+                                    dsc_loss.item(),
+                                    jaccard_distance.item(),
+                                )
+                            )
 
             if phase == "train":
                 mean_train_orig_loss = np.mean(orig_loss_train)
@@ -167,23 +217,35 @@ def main(args):
 
                 log_loss_summary(logger, mean_train_orig_loss, epoch, prefix="orig_")
                 log_loss_summary(logger, mean_train_dsc_loss, epoch, prefix="dsc_")
-                log_loss_summary(logger, train_jaccard_distance_loss, epoch, prefix="jaccard_distance_")
+                log_loss_summary(
+                    logger,
+                    train_jaccard_distance_loss,
+                    epoch,
+                    prefix="jaccard_distance_",
+                )
 
                 mean_train_dsc = []
                 orig_loss_train = []
                 dsc_loss_train = []
                 jaccard_distance_loss_train = []
 
-                dsc_train=[]
+                dsc_train = []
 
             if phase == "valid":
                 validation_orig_loss = np.mean(orig_loss_valid)
                 validation_dsc_loss = np.mean(dsc_loss_valid)
                 validation_jaccard_distance_loss = np.mean(jaccard_distance_loss_valid)
-                
-                log_loss_summary(logger, validation_orig_loss, epoch, prefix="orig_val_")
+
+                log_loss_summary(
+                    logger, validation_orig_loss, epoch, prefix="orig_val_"
+                )
                 log_loss_summary(logger, validation_dsc_loss, epoch, prefix="dsc_val_")
-                log_loss_summary(logger, validation_jaccard_distance_loss, epoch, prefix="val_jaccard_distance_")
+                log_loss_summary(
+                    logger,
+                    validation_jaccard_distance_loss,
+                    epoch,
+                    prefix="val_jaccard_distance_",
+                )
 
                 orig_loss_valid = []
                 dsc_loss_valid = []
@@ -193,22 +255,43 @@ def main(args):
                 dsc_valid = []
 
                 if validation_orig_loss < best_validation_orig_loss:
-                    print('\n',f'saving weight into {args.weights}','\n')
+                    print("\n", f"saving weight into {args.weights}", "\n")
                     best_validation_orig_loss = validation_orig_loss
-                    torch.save(model.state_dict(), os.path.join(args.weights, "{}-{}-val_{}-{}.pt".format(args.model, epoch, orig_loss_name, best_validation_orig_loss))) 
+                    torch.save(
+                        model.state_dict(),
+                        os.path.join(
+                            args.weights,
+                            "{}-{}-val_{}-{}.pt".format(
+                                args.model,
+                                epoch,
+                                orig_loss_name,
+                                best_validation_orig_loss,
+                            ),
+                        ),
+                    )
                 else:
-                    print('\n','%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%weight is not saved%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%','\n')
+                    print(
+                        "\n",
+                        "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%weight is not saved%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
+                        "\n",
+                    )
             epoch_step = 0
 
-        print('Epoch={}/{}, orig_loss={}, val_orig_loss={}, DSC = {}, val_DSC = {}, dsc_loss={}, val_dsc_loss={}, jaccard_distance={}, val_jaccard_distance={}'.format(epoch,args.epochs,
-                    mean_train_orig_loss,
-                    validation_orig_loss,
-                    mean_train_dsc,
-                    mean_validation_dsc,
-                    mean_train_dsc_loss,
-                    validation_dsc_loss,
-                    train_jaccard_distance_loss, 
-                    validation_jaccard_distance_loss))
+        print(
+            "Epoch={}/{}, orig_loss={}, val_orig_loss={}, DSC = {}, val_DSC = {}, dsc_loss={}, val_dsc_loss={}, jaccard_distance={}, val_jaccard_distance={}".format(
+                epoch,
+                args.epochs,
+                mean_train_orig_loss,
+                validation_orig_loss,
+                mean_train_dsc,
+                mean_validation_dsc,
+                mean_train_dsc_loss,
+                validation_dsc_loss,
+                train_jaccard_distance_loss,
+                validation_jaccard_distance_loss,
+            )
+        )
+
 
 def data_loaders(args):
     dataset_train, dataset_valid = datasets(args)
@@ -226,7 +309,8 @@ def data_loaders(args):
         num_workers=args.workers,
     )
     return loader_train, loader_valid
-    
+
+
 def datasets(args):
     train = Dataset(
         args,
@@ -243,18 +327,22 @@ def datasets(args):
     )
     return train, valid
 
+
 def log_loss_summary(logger, loss, step, prefix=""):
     logger.scalar_summary(prefix + "loss", np.mean(loss), step)
+
 
 def make_dirs(args):
     os.makedirs(args.weights, exist_ok=True)
     os.makedirs(args.test, exist_ok=True)
     os.makedirs(args.logs, exist_ok=True)
 
+
 def save_args(args):
     args_file = os.path.join(args.logs, "args.yaml")
     with open(args_file, "w") as fp:
         yaml.dump(vars(args), fp)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -263,7 +351,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default='preactivation_resunet',
+        default="preactivation_resunet",
         help="choose model",
     )
     parser.add_argument(
@@ -305,14 +393,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--weights", type=str, default="", help="folder to save weights"
     )
+    parser.add_argument("--test", type=str, default="", help="folder to save weights")
+    parser.add_argument("--logs", type=str, default="", help="folder to save logs")
     parser.add_argument(
-        "--test", type=str, default="", help="folder to save weights"
-    )
-    parser.add_argument(
-        "--logs", type=str, default="", help="folder to save logs"
-    )
-    parser.add_argument(
-        "--images", type=str, default="./datasets/{}_data".format(Dataset.name), help="root folder with images"
+        "--images",
+        type=str,
+        default="./datasets/{}_data".format(Dataset.name),
+        help="root folder with images",
     )
     parser.add_argument(
         "--image-size",

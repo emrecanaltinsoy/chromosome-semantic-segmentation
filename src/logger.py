@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 class Logger(object):
     def __init__(self, log_dir):
         self.writer = tf.summary.FileWriter(log_dir)

@@ -29,55 +29,74 @@ from models.Unet_nested import UNet_Nested
 from models.DeepLabV3 import Deeplabv3_ResNet101
 from models.PSPNet import PSPNet
 
+
 def main(args):
-    args.model = 'preactivation_resunet'
-    args.model_path = 'preactivation_resunet-20210401T1308'
+    args.model = "preactivation_resunet"
+    args.model_path = "preactivation_resunet-20210401T1308"
     args.weight_num = 1
     args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
     args.batch_size = 2
     args.test_results = False
 
-    if args.model == 'unet':
-        model = UNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=32)
+    if args.model == "unet":
+        model = UNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=32,
+        )
         net_name = UNet.net_name
-    elif args.model == 'resunet':
-        model = ResUNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=32)
-        net_name = 'resunet'
-    elif args.model == 'preactivation_resunet':
-        model = PreactResUNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes, init_features=32)
-        net_name = 'preactivation_resunet'
-    elif args.model == 'cenet':
+    elif args.model == "resunet":
+        model = ResUNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=32,
+        )
+        net_name = "resunet"
+    elif args.model == "preactivation_resunet":
+        model = PreactResUNet(
+            in_channels=Dataset.in_channels,
+            num_classes=Dataset.num_classes,
+            init_features=32,
+        )
+        net_name = "preactivation_resunet"
+    elif args.model == "cenet":
         model = CE_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'cenet'
-    elif args.model == 'segnet':
+        net_name = "cenet"
+    elif args.model == "segnet":
         model = SegNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'segnet'
-    elif args.model == 'nested_unet':
-        model = UNet_Nested(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'nested_unet'
-    elif args.model == 'attention_unet':
-        model = AttU_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = 'attention_unet'
-    elif args.model == 'fcn_resnet101':
+        net_name = "segnet"
+    elif args.model == "nested_unet":
+        model = UNet_Nested(
+            in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
+        )
+        net_name = "nested_unet"
+    elif args.model == "attention_unet":
+        model = AttU_Net(
+            in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
+        )
+        net_name = "attention_unet"
+    elif args.model == "fcn_resnet101":
         model = FCN_ResNet101(in_channels=1, num_classes=3)
-        net_name = 'fcn_resnet101'
-    elif args.model == 'deeplabv3_resnet101':
+        net_name = "fcn_resnet101"
+    elif args.model == "deeplabv3_resnet101":
         model = Deeplabv3_ResNet101(in_channels=1, num_classes=3)
-        net_name = 'deeplabv3_resnet101'
-    elif args.model == 'pspnet':
-        model = PSPNet(num_classes=Dataset.num_classes, pretrained=False, backend='resnet101')
-        net_name = 'pspnet'
+        net_name = "deeplabv3_resnet101"
+    elif args.model == "pspnet":
+        model = PSPNet(
+            num_classes=Dataset.num_classes, pretrained=False, backend="resnet101"
+        )
+        net_name = "pspnet"
 
     device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
     model.to(device)
-    
-    weights_dir = 'output/{}/{}/weights'.format(Dataset.name, args.model_path)
+
+    weights_dir = "output/{}/{}/weights".format(Dataset.name, args.model_path)
     print(weights_dir)
-    model_name = glob(weights_dir + '/{}-{}*'.format(net_name, args.weight_num))[0] 
+    model_name = glob(weights_dir + "/{}-{}*".format(net_name, args.weight_num))[0]
     state_dict = torch.load(model_name, map_location=device)
     model.load_state_dict(state_dict)
-    
-    test_dir = 'output/{}/{}/test'.format(Dataset.name, args.model_path)
+
+    test_dir = "output/{}/{}/test".format(Dataset.name, args.model_path)
 
     model.eval()
 
@@ -92,13 +111,15 @@ def main(args):
     loaders = {"test": loader}
 
     start = time.time()
-    print('clock started')
+    print("clock started")
 
     test_img_num = 1
 
     for i, data in enumerate(loaders["test"], 0):
         x, y_true = data
-        x, y_true = x.to(device, dtype=torch.float), y_true.to(device, dtype=torch.float)
+        x, y_true = x.to(device, dtype=torch.float), y_true.to(
+            device, dtype=torch.float
+        )
 
         with torch.set_grad_enabled(False):
             y_pred = model(x)
@@ -106,7 +127,7 @@ def main(args):
 
             evaluations_ = evaluations(y_pred, y_true)
             evaluations_np += evaluations_
-                
+
             total_dsc_loss.append(dsc_loss.item())
 
             if args.test_results:
@@ -114,29 +135,43 @@ def main(args):
                 x_np = x.detach().cpu().numpy()
                 for img_num in range(y_pred_np.shape[0]):
                     for mask_num in range(y_pred_np.shape[1]):
-                        io.imsave(os.path.join(test_dir,"{}_label{}.png".format(test_img_num,mask_num)), y_pred_np[img_num,mask_num,:,:])
+                        io.imsave(
+                            os.path.join(
+                                test_dir,
+                                "{}_label{}.png".format(test_img_num, mask_num),
+                            ),
+                            y_pred_np[img_num, mask_num, :, :],
+                        )
                     for mask_num in range(x_np.shape[1]):
-                        io.imsave(os.path.join(test_dir,"%d_image.png"%test_img_num), x_np[img_num,mask_num,:,:]*255)
+                        io.imsave(
+                            os.path.join(test_dir, "%d_image.png" % test_img_num),
+                            x_np[img_num, mask_num, :, :] * 255,
+                        )
                     test_img_num += 1
 
     end = time.time()
-    print('{} seconds past'.format(end-start))
+    print("{} seconds past".format(end - start))
 
     evaluations_np = np.array(evaluations_np)
-    with open('output/{}/{}/test-eval.npy'.format(Dataset.name, args.model_path), 'wb') as f:
+    with open(
+        "output/{}/{}/test-eval.npy".format(Dataset.name, args.model_path), "wb"
+    ) as f:
         np.save(f, evaluations_np)
 
     mean_dsc_loss = float(np.mean(total_dsc_loss))
     mean_DSC = 1 - mean_dsc_loss
     metrics = {
-        'mean_dsc_loss': mean_dsc_loss,
-        'mean_DSC': mean_DSC,
+        "mean_dsc_loss": mean_dsc_loss,
+        "mean_DSC": mean_DSC,
     }
-    with open('output/{}/{}/metrics.yaml'.format(Dataset.name, args.model_path), 'w') as fp:
+    with open(
+        "output/{}/{}/metrics.yaml".format(Dataset.name, args.model_path), "w"
+    ) as fp:
         yaml.dump(metrics, fp)
 
-    print(f'mean dsc loss={mean_dsc_loss}')
-    print(f'mean DSC={mean_DSC}')
+    print(f"mean dsc loss={mean_dsc_loss}")
+    print(f"mean DSC={mean_DSC}")
+
 
 def data_loaders(args):
     dataset_test = datasets(args)
@@ -148,6 +183,7 @@ def data_loaders(args):
     )
     return loader_test
 
+
 def datasets(args):
     test = Dataset(
         args,
@@ -158,6 +194,7 @@ def datasets(args):
     )
     return test
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Semantic segmentation of G-banding chromosome Images"
@@ -165,7 +202,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default='preactivation_resunet',
+        default="preactivation_resunet",
         help="choose model",
     )
     parser.add_argument(
@@ -175,10 +212,7 @@ if __name__ == "__main__":
         help="weight number for inference",
     )
     parser.add_argument(
-        "--model-path",
-        type=str,
-        default='',
-        help="path to weights file"
+        "--model-path", type=str, default="", help="path to weights file"
     )
     parser.add_argument(
         "--batch-size",
@@ -199,7 +233,10 @@ if __name__ == "__main__":
         help="number of workers for data loading (default: 1)",
     )
     parser.add_argument(
-        "--images", type=str, default="./datasets/{}_data/train".format(Dataset.name), help="root folder with images"
+        "--images",
+        type=str,
+        default="./datasets/{}_data/train".format(Dataset.name),
+        help="root folder with images",
     )
     parser.add_argument(
         "--image-size",

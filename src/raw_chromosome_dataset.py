@@ -15,12 +15,13 @@ from torch.utils.data import Dataset
 
 from utils import adjustData
 
+
 class RawChromosomeDataset(Dataset):
 
     in_channels = 1
     num_classes = 3
     now = datetime.datetime.now()
-    name = 'raw_chromosome'
+    name = "raw_chromosome"
     img_size = [480, 640]
 
     def __init__(
@@ -59,13 +60,15 @@ class RawChromosomeDataset(Dataset):
 
         self.patients = sorted(volumes)
 
-        test_cases =  int(len(volumes)/5)
-        validation_cases =  int((len(volumes)-test_cases)/5)
+        test_cases = int(len(volumes) / 5)
+        validation_cases = int((len(volumes) - test_cases) / 5)
 
         if subset != "all":
             random.seed(seed)
             validation_patients = random.sample(self.patients, k=validation_cases)
-            self.patients = sorted(list(set(self.patients).difference(validation_patients)))
+            self.patients = sorted(
+                list(set(self.patients).difference(validation_patients))
+            )
             test_patients = random.sample(self.patients, k=test_cases)
             if subset == "validation":
                 self.patients = validation_patients
@@ -75,7 +78,7 @@ class RawChromosomeDataset(Dataset):
                 self.patients = sorted(
                     list(set(self.patients).difference(test_patients))
                 )
-                
+
         print("preprocessing {} volumes...".format(subset))
         self.volumes = [(volumes[k], masks[k]) for k in self.patients]
 
@@ -90,13 +93,13 @@ class RawChromosomeDataset(Dataset):
         masks_npy = np.array(masks_npy)
 
         self.random_sampling = random_sampling
-        
+
         images_npy = images_npy.transpose(0, 3, 1, 2)
         masks_npy = masks_npy.transpose(0, 3, 1, 2)
 
         self.images_tensor = torch.from_numpy(images_npy)
         self.masks_tensor = torch.from_numpy(masks_npy)
-        
+
         print("done creating {} dataset".format(subset))
 
     def __len__(self):
