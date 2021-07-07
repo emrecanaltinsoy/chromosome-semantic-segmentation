@@ -67,6 +67,8 @@ class Attention_block(nn.Module):
 
 
 class AttU_Net(nn.Module):
+    net_name = "attention_unet"
+
     def __init__(self, in_channels=1, num_classes=3):
         super(AttU_Net, self).__init__()
 

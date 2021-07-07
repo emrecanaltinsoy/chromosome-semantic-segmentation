@@ -1,24 +1,23 @@
+from functools import partial
+
 import torch
 import torch.nn as nn
 from torchvision import models
 import torch.nn.functional as F
-
-from functools import partial
 
 nonlinearity = partial(F.relu, inplace=True)
 
 
 class DACblock(nn.Module):
     def __init__(self, channel):
-        super(DACblock, self).__init__()
+        super().__init__()
         self.dilate1 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
         self.dilate2 = nn.Conv2d(channel, channel, kernel_size=3, dilation=3, padding=3)
         self.dilate3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=5, padding=5)
         self.conv1x1 = nn.Conv2d(channel, channel, kernel_size=1, dilation=1, padding=0)
         for m in self.modules():
-            if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
-                if m.bias is not None:
-                    m.bias.data.zero_()
+            if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)) and m.bias is not None:
+                m.bias.data.zero_()
 
     def forward(self, x):
         dilate1_out = nonlinearity(self.dilate1(x))
@@ -27,21 +26,19 @@ class DACblock(nn.Module):
         dilate4_out = nonlinearity(
             self.conv1x1(self.dilate3(self.dilate2(self.dilate1(x))))
         )
-        out = x + dilate1_out + dilate2_out + dilate3_out + dilate4_out
-        return out
+        return x + dilate1_out + dilate2_out + dilate3_out + dilate4_out
 
 
 class DACblock_without_atrous(nn.Module):
     def __init__(self, channel):
-        super(DACblock_without_atrous, self).__init__()
+        super().__init__()
         self.dilate1 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
         self.dilate2 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
         self.dilate3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
         self.conv1x1 = nn.Conv2d(channel, channel, kernel_size=1, dilation=1, padding=0)
         for m in self.modules():
-            if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
-                if m.bias is not None:
-                    m.bias.data.zero_()
+            if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)) and m.bias is not None:
+                m.bias.data.zero_()
 
     def forward(self, x):
         dilate1_out = nonlinearity(self.dilate1(x))
@@ -50,14 +47,12 @@ class DACblock_without_atrous(nn.Module):
         dilate4_out = nonlinearity(
             self.conv1x1(self.dilate3(self.dilate2(self.dilate1(x))))
         )
-        out = x + dilate1_out + dilate2_out + dilate3_out + dilate4_out
-
-        return out
+        return x + dilate1_out + dilate2_out + dilate3_out + dilate4_out
 
 
 class DACblock_with_inception(nn.Module):
     def __init__(self, channel):
-        super(DACblock_with_inception, self).__init__()
+        super().__init__()
         self.dilate1 = nn.Conv2d(channel, channel, kernel_size=1, dilation=1, padding=0)
 
         self.dilate3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
@@ -65,9 +60,8 @@ class DACblock_with_inception(nn.Module):
             2 * channel, channel, kernel_size=1, dilation=1, padding=0
         )
         for m in self.modules():
-            if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
-                if m.bias is not None:
-                    m.bias.data.zero_()
+            if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)) and m.bias is not None:
+                m.bias.data.zero_()
 
     def forward(self, x):
         dilate1_out = nonlinearity(self.dilate1(x))
@@ -76,30 +70,27 @@ class DACblock_with_inception(nn.Module):
             self.conv1x1(torch.cat([dilate1_out, dilate2_out], 1))
         )
         dilate3_out = nonlinearity(self.dilate1(dilate_concat))
-        out = x + dilate3_out
-        return out
+        return x + dilate3_out
 
 
 class DACblock_with_inception_blocks(nn.Module):
     def __init__(self, channel):
-        super(DACblock_with_inception_blocks, self).__init__()
+        super().__init__()
         self.conv1x1 = nn.Conv2d(channel, channel, kernel_size=1, dilation=1, padding=0)
         self.conv3x3 = nn.Conv2d(channel, channel, kernel_size=3, dilation=1, padding=1)
         self.conv5x5 = nn.Conv2d(channel, channel, kernel_size=5, dilation=1, padding=2)
         self.pooling = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
 
         for m in self.modules():
-            if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
-                if m.bias is not None:
-                    m.bias.data.zero_()
+            if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)) and m.bias is not None:
+                m.bias.data.zero_()
 
     def forward(self, x):
         dilate1_out = nonlinearity(self.conv1x1(x))
         dilate2_out = nonlinearity(self.conv3x3(self.conv1x1(x)))
         dilate3_out = nonlinearity(self.conv5x5(self.conv1x1(x)))
         dilate4_out = self.pooling(x)
-        out = dilate1_out + dilate2_out + dilate3_out + dilate4_out
-        return out
+        return dilate1_out + dilate2_out + dilate3_out + dilate4_out
 
 
 class PSPModule(nn.Module):
@@ -131,7 +122,7 @@ class PSPModule(nn.Module):
 
 class SPPblock(nn.Module):
     def __init__(self, in_channels):
-        super(SPPblock, self).__init__()
+        super().__init__()
         self.pool1 = nn.MaxPool2d(kernel_size=[2, 2], stride=2)
         self.pool2 = nn.MaxPool2d(kernel_size=[3, 3], stride=3)
         self.pool3 = nn.MaxPool2d(kernel_size=[5, 5], stride=5)
@@ -156,14 +147,12 @@ class SPPblock(nn.Module):
             self.conv(self.pool4(x)), size=(h, w), mode="bilinear"
         )
 
-        out = torch.cat([self.layer1, self.layer2, self.layer3, self.layer4, x], 1)
-
-        return out
+        return torch.cat([self.layer1, self.layer2, self.layer3, self.layer4, x], 1)
 
 
 class DecoderBlock(nn.Module):
     def __init__(self, in_channels, n_filters):
-        super(DecoderBlock, self).__init__()
+        super().__init__()
 
         self.conv1 = nn.Conv2d(in_channels, in_channels // 4, 1)
         self.norm1 = nn.BatchNorm2d(in_channels // 4)
@@ -193,8 +182,10 @@ class DecoderBlock(nn.Module):
 
 
 class CE_Net(nn.Module):
+    net_name = "cenet"
+
     def __init__(self, num_classes=4, in_channels=3):
-        super(CE_Net, self).__init__()
+        super().__init__()
 
         filters = [64, 128, 256, 512]
         resnet = models.resnet34(pretrained=False)
@@ -258,7 +249,7 @@ class CE_Net(nn.Module):
 
 class CE_Net_backbone_DAC_without_atrous(nn.Module):
     def __init__(self, num_classes=1, in_channels=3):
-        super(CE_Net_backbone_DAC_without_atrous, self).__init__()
+        super().__init__()
 
         filters = [64, 128, 256, 512]
         resnet = models.resnet34(pretrained=True)
@@ -316,7 +307,7 @@ class CE_Net_backbone_DAC_without_atrous(nn.Module):
 
 class CE_Net_backbone_DAC_with_inception(nn.Module):
     def __init__(self, num_classes=1, in_channels=3):
-        super(CE_Net_backbone_DAC_with_inception, self).__init__()
+        super().__init__()
 
         filters = [64, 128, 256, 512]
         resnet = models.resnet34(pretrained=True)
@@ -374,7 +365,7 @@ class CE_Net_backbone_DAC_with_inception(nn.Module):
 
 class CE_Net_backbone_inception_blocks(nn.Module):
     def __init__(self, num_classes=1, in_channels=3):
-        super(CE_Net_backbone_inception_blocks, self).__init__()
+        super().__init__()
 
         filters = [64, 128, 256, 512]
         resnet = models.resnet34(pretrained=True)
@@ -432,7 +423,7 @@ class CE_Net_backbone_inception_blocks(nn.Module):
 
 class CE_Net_OCT(nn.Module):
     def __init__(self, num_classes=3, in_channels=1):
-        super(CE_Net_OCT, self).__init__()
+        super().__init__()
 
         filters = [64, 128, 256, 512]
         resnet = models.resnet34(pretrained=True)
@@ -491,7 +482,7 @@ class CE_Net_OCT(nn.Module):
 
 class double_conv(nn.Module):
     def __init__(self, in_ch, out_ch):
-        super(double_conv, self).__init__()
+        super().__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(in_ch, out_ch, kernel_size=3, padding=1),
             nn.BatchNorm2d(out_ch),
@@ -508,7 +499,7 @@ class double_conv(nn.Module):
 
 class inconv(nn.Module):
     def __init__(self, in_ch, out_ch):
-        super(inconv, self).__init__()
+        super().__init__()
         self.conv = double_conv(in_ch, out_ch)
 
     def forward(self, x):
@@ -518,7 +509,7 @@ class inconv(nn.Module):
 
 class down(nn.Module):
     def __init__(self, in_ch, out_ch):
-        super(down, self).__init__()
+        super().__init__()
         self.max_pool_conv = nn.Sequential(nn.MaxPool2d(2), double_conv(in_ch, out_ch))
 
     def forward(self, x):
@@ -528,7 +519,7 @@ class down(nn.Module):
 
 class up(nn.Module):
     def __init__(self, in_ch, out_ch, bilinear=True):
-        super(up, self).__init__()
+        super().__init__()
         if bilinear:
             self.up = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
         else:
@@ -548,7 +539,7 @@ class up(nn.Module):
 
 class outconv(nn.Module):
     def __init__(self, in_ch, out_ch):
-        super(outconv, self).__init__()
+        super().__init__()
         self.conv = nn.Conv2d(in_ch, out_ch, kernel_size=1)
 
     def forward(self, x):
@@ -558,7 +549,7 @@ class outconv(nn.Module):
 
 class UNet(nn.Module):
     def __init__(self, n_channels=3, n_classes=1):
-        super(UNet, self).__init__()
+        super().__init__()
         self.inc = inconv(n_channels, 64)
         self.down1 = down(64, 128)
         self.down2 = down(128, 256)

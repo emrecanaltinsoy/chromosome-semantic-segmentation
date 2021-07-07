@@ -1,13 +1,13 @@
+import os
+import inspect
+import sys
+import glob
+
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
-import os
-import glob
 import yaml
 import numpy as np
-import argparse
-import inspect
-import sys
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)

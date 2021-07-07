@@ -7,7 +7,6 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 import torchvision.models as models
-import pprint
 
 F = nn.functional
 DEBUG = False
@@ -30,8 +29,10 @@ decoder_dims = [
 
 
 class SegNet(nn.Module):
+    net_name = "segnet"
+
     def __init__(self, in_channels, num_classes):
-        super(SegNet, self).__init__()
+        super().__init__()
 
         self.in_channels = in_channels
         self.num_classes = num_classes

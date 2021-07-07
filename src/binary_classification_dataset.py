@@ -1,8 +1,9 @@
 import os
-import random
-import datetime
 import inspect
 import sys
+
+import random
+import datetime
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)

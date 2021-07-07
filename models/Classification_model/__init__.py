@@ -3,8 +3,8 @@ import torch.nn as nn
 
 
 class classification_model(nn.Module):
-    def __init__(self, n_in, n_out, layers, p=0.4):
-        super(classification_model, self).__init__()
+    def __init__(self, n_in, n_out, layers):
+        super().__init__()
 
         all_layers = []
         self.n_in = n_in

@@ -1,8 +1,9 @@
-import yaml
 import os
 import glob
-import numpy as np
 import argparse
+
+import yaml
+import numpy as np
 
 yaml_files = glob.glob("./**/metrics.yaml", recursive=True)
 npy_files = glob.glob("./**/test-eval.npy", recursive=True)
@@ -47,8 +48,8 @@ def main(args):
         mask0 = np.zeros(4)
         mask1 = np.zeros(4)
         mask2 = np.zeros(4)
-        eval = np.load(npy_files[i])
-        for e in eval:
+        eval_ = np.load(npy_files[i])
+        for e in eval_:
             mask0 += e[0]
             mask1 += e[1]
             mask2 += e[2]

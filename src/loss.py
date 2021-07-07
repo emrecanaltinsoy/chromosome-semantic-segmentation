@@ -2,33 +2,24 @@ import torch
 import torch.nn as nn
 
 
-class evals(nn.Module):
-    def __init__(self):
-        super(evals, self).__init__()
-        pass
+def evals(y_pred, y_true):
+    assert y_pred.size() == y_true.size()
+    dsc_arr = []
+    for im_num in range(y_pred.shape[0]):
+        im_arr = []
+        for channel_num in range(y_pred.shape[1]):
+            y_pred_flat = y_pred[im_num, channel_num].contiguous().view(-1)
+            y_true_flat = y_true[im_num, channel_num].contiguous().view(-1)
+            TP = (y_pred_flat * y_true_flat).sum().detach().cpu().numpy()
+            TN = (
+                ((1.0 - y_pred_flat) * (1.0 - y_true_flat)).sum().detach().cpu().numpy()
+            )
+            FP = (y_pred_flat * (1.0 - y_true_flat)).sum().detach().cpu().numpy()
+            FN = ((1.0 - y_pred_flat) * y_true_flat).sum().detach().cpu().numpy()
 
-    def forward(self, y_pred, y_true):
-        assert y_pred.size() == y_true.size()
-        dsc_arr = []
-        for im_num in range(y_pred.shape[0]):
-            im_arr = []
-            for channel_num in range(y_pred.shape[1]):
-                y_pred_flat = y_pred[im_num, channel_num].contiguous().view(-1)
-                y_true_flat = y_true[im_num, channel_num].contiguous().view(-1)
-                TP = (y_pred_flat * y_true_flat).sum().detach().cpu().numpy()
-                TN = (
-                    ((1.0 - y_pred_flat) * (1.0 - y_true_flat))
-                    .sum()
-                    .detach()
-                    .cpu()
-                    .numpy()
-                )
-                FP = (y_pred_flat * (1.0 - y_true_flat)).sum().detach().cpu().numpy()
-                FN = ((1.0 - y_pred_flat) * y_true_flat).sum().detach().cpu().numpy()
-
-                im_arr.append([TP, TN, FP, FN])
-            dsc_arr.append(im_arr)
-        return dsc_arr
+            im_arr.append([TP, TN, FP, FN])
+        dsc_arr.append(im_arr)
+    return dsc_arr
 
 
 def jaccard_distance_loss(y_true, y_pred, smooth=100):

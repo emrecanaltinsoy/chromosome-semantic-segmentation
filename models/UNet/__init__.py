@@ -5,8 +5,10 @@ import torch.nn as nn
 
 
 class UNet(nn.Module):
+    net_name = "unet"
+
     def __init__(self, in_channels=3, num_classes=1, init_features=32):
-        super(UNet, self).__init__()
+        super().__init__()
 
         features = init_features
         self.encoder1 = UNet._block(in_channels, features, name="enc1")

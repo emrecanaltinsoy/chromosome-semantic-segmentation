@@ -1,9 +1,9 @@
-import torch
-import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
 import os
 import inspect
 import sys
+
+import torch
+from torch.utils.tensorboard import SummaryWriter
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)

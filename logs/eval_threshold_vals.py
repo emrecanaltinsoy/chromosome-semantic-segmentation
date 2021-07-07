@@ -1,12 +1,12 @@
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-import skimage.io as io
-import yaml
-
 import os
 import inspect
 import sys
+
+import cv2
+import numpy as np
+import skimage.io as io
+import yaml
+
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -56,7 +56,7 @@ def find_threshold_dsc(models, y_preds, y_trues, t_vals, print_vals=False, prefi
         t_max = 0
         dsc_max = 0
         for t_val in t_vals[model]:
-            evals = list()
+            evals = []
             for im_num in range(84):
                 y_pred = y_preds[model][im_num]
                 y_true = y_trues[im_num]
@@ -96,7 +96,7 @@ def save_best_metrics_images(models, y_preds, y_trues, t_vals, prefix=""):
     evals_dict_all = {}
     for model in models:
         evals_dict = {}
-        evals = list()
+        evals = []
         for im_num in range(84):
             y_pred = y_preds[model][im_num]
             y_true = y_trues[im_num]
@@ -139,15 +139,12 @@ def save_best_metrics_images(models, y_preds, y_trues, t_vals, prefix=""):
 
 if __name__ == "__main__":
     orig_path = "./datasets/raw_chromosome_label1"
-    y_trues = []
-    # im_origs = []
-    for im_num in range(84):
-        y_trues.append(
-            cv2.imread(os.path.join(orig_path, "{}_label1_orig.png".format(im_num)))[
-                :, :, 0
-            ]
-        )
-        # im_origs.append(cv2.imread(os.path.join(orig_path,"{}_image.png".format(im_num)))[:,:,0])
+    y_trues = [
+        cv2.imread(os.path.join(orig_path, "{}_label1_orig.png".format(im_num)))[
+            :, :, 0
+        ]
+        for im_num in range(84)
+    ]
 
     models = [
         "unet",
@@ -166,13 +163,13 @@ if __name__ == "__main__":
     y_preds = {}
     for model in models:
         pred_path = f"./logs/scalar/{model}/test"
-        y_pred = []
-        for im_num in range(84):
-            y_pred.append(
-                cv2.imread(os.path.join(pred_path, "{}_label1.png".format(im_num + 1)))[
-                    :, :, 0
-                ]
-            )
+        y_pred = [
+            cv2.imread(os.path.join(pred_path, "{}_label1.png".format(im_num + 1)))[
+                :, :, 0
+            ]
+            for im_num in range(84)
+        ]
+
         y_preds[model] = y_pred
 
     t_step = 5

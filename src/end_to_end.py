@@ -1,18 +1,17 @@
-import time
-import torch
-import torch.nn as nn
-from glob import glob
-
-import skimage.io as io
-from skimage.io import imread
-import cv2
-from skimage.morphology import convex_hull_image
-import matplotlib.pyplot as plt
-import numpy as np
-
 import os
 import inspect
 import sys
+
+import time
+from glob import glob
+
+import torch
+import torch.nn as nn
+import skimage.io as io
+from skimage.io import imread
+from skimage.morphology import convex_hull_image
+import cv2
+import numpy as np
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -82,8 +81,8 @@ def feature_extraction(label1_dir, label2_dir):
             label_num.append(num_labels_i)
 
     area_total = sum(area_list)
-    area_list = area_list / area_total
-    conv_hull_area_list = conv_hull_area_list / area_total
+    area_list /= area_total
+    conv_hull_area_list /= area_total
 
     areas_npy = np.array(area_list)
     conv_hull_area_npy = np.array(conv_hull_area_list)
@@ -123,7 +122,7 @@ def final_res(label1_dir, label2_dir, final_labels, save_dir, img_orig):
     _, I_bin = cv2.threshold(I_bin, 255 * 0.99, 255, cv2.THRESH_BINARY)
 
     connectivity = 8
-    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(
+    num_labels, labels, _, _ = cv2.connectedComponentsWithStats(
         I_bin, connectivity, cv2.CV_32S
     )
 
@@ -164,7 +163,7 @@ if __name__ == "__main__":
     classification_network = classification_model(4, 2, [200, 100, 50, 25, 5])
     classification_network.to(device)
 
-    weights = "output/binary_classification/classification_model-20210331T2310\weights"
+    weights = "output/binary_classification/classification_model-20210331T2310/weights"
     class_model_name = glob(weights + "/net-19*")[0]
     class_state_dict = torch.load(class_model_name, map_location=device)
     classification_network.load_state_dict(class_state_dict)
@@ -214,12 +213,9 @@ if __name__ == "__main__":
         pred_percentage = sm(y_pred)
         final_percentage, preds = torch.max(pred_percentage, 1)
 
-        final_labels = []
         labels = labels.detach().cpu().numpy()
 
-        for i in range(len(preds)):
-            if preds[i] == 0:
-                final_labels.append(labels[i])
+        final_labels = [labels[i] for i in range(len(preds)) if preds[i] == 0]
 
         final_res(label1_dir, label2_dir, final_labels, save_dir, img_orig)
 

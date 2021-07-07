@@ -13,7 +13,19 @@ from skimage.io import imread
 import torch
 from torch.utils.data import Dataset
 
-from utils import adjustData
+
+def adjustData(v, num_class=4):
+    volume, mask = v
+    if volume.dtype == "uint8":
+        volume = volume / 255
+    new_volume = np.zeros(volume.shape + (1,))
+    new_volume[:, :, 0] = volume
+    new_mask = np.zeros(mask.shape + (num_class,))
+    for i in range(num_class):
+        new_mask[mask == i, i] = 1
+    mask = new_mask
+    volume = new_volume
+    return (volume, mask)
 
 
 class RawChromosomeDataset(Dataset):
@@ -52,7 +64,7 @@ class RawChromosomeDataset(Dataset):
                     mask_slices.append(imread(filepath, as_gray=True))
                 else:
                     image_slices.append(imread(filepath, as_gray=True))
-            if len(image_slices) > 0:
+            if image_slices:
                 patient_id = dirpath.split("/")[-1]
                 patient_id = patient_id.split("\\")[-1]
                 volumes[patient_id] = np.array(image_slices[0])
@@ -60,11 +72,11 @@ class RawChromosomeDataset(Dataset):
 
         self.patients = sorted(volumes)
 
-        test_cases = int(len(volumes) / 5)
-        validation_cases = int((len(volumes) - test_cases) / 5)
-
         if subset != "all":
             random.seed(seed)
+            test_cases = int(len(volumes) / 5)
+            validation_cases = int((len(volumes) - test_cases) / 5)
+
             validation_patients = random.sample(self.patients, k=validation_cases)
             self.patients = sorted(
                 list(set(self.patients).difference(validation_patients))

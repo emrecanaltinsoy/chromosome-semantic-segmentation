@@ -45,7 +45,7 @@ if __name__ == "__main__":
     for method, pref in zipped:
         folder_path = f"output/results/{method}/"
         evals_dict = {}
-        evals = list()
+        evals = []
         for im_num in range(84):
             label1_orig = imread(
                 os.path.join(

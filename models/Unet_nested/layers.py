@@ -5,31 +5,27 @@ from models.Unet_nested.utils import init_weights
 
 class unetConv2(nn.Module):
     def __init__(self, in_size, out_size, is_batchnorm, n=2, ks=3, stride=1, padding=1):
-        super(unetConv2, self).__init__()
+        super().__init__()
         self.n = n
         self.ks = ks
         self.stride = stride
         self.padding = padding
         s = stride
         p = padding
-        if is_batchnorm:
-            for i in range(1, n + 1):
+        for i in range(1, n + 1):
+            if is_batchnorm:
                 conv = nn.Sequential(
                     nn.Conv2d(in_size, out_size, ks, s, p),
                     nn.BatchNorm2d(out_size),
                     nn.ReLU(inplace=True),
                 )
-                setattr(self, "conv%d" % i, conv)
-                in_size = out_size
-
-        else:
-            for i in range(1, n + 1):
+            else:
                 conv = nn.Sequential(
                     nn.Conv2d(in_size, out_size, ks, s, p),
                     nn.ReLU(inplace=True),
                 )
-                setattr(self, "conv%d" % i, conv)
-                in_size = out_size
+            setattr(self, "conv%d" % i, conv)
+            in_size = out_size
 
         # initialise the blocks
         for m in self.children():
@@ -46,7 +42,7 @@ class unetConv2(nn.Module):
 
 class unetUp(nn.Module):
     def __init__(self, in_size, out_size, is_deconv, n_concat=2):
-        super(unetUp, self).__init__()
+        super().__init__()
         self.conv = unetConv2(in_size + (n_concat - 2) * out_size, out_size, False)
         if is_deconv:
             self.up = nn.ConvTranspose2d(

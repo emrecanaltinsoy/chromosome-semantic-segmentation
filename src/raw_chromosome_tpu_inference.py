@@ -1,9 +1,10 @@
-import argparse
-import yaml
 import os
-from glob import glob
 import inspect
 import sys
+
+import argparse
+import yaml
+from glob import glob
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -34,12 +35,12 @@ from models.PSPNet import PSPNet
 
 
 def main(args):
-    args.model = "preactivation_resunet"
-    args.model_path = "preactivation_resunet-20210331T2226"
-    args.weight_num = 1
-    args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
-    args.batch_size = 2
-    args.test_results = True
+    # args.model = "preactivation_resunet"
+    # args.model_path = "preactivation_resunet-20210331T2226"
+    # args.weight_num = 1
+    # args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
+    # args.batch_size = 2
+    # args.test_results = True
 
     if args.model == "unet":
         model = UNet(
@@ -178,24 +179,22 @@ def main(args):
 
 def data_loaders(args):
     dataset_test = datasets(args)
-    loader_test = DataLoader(
+    return DataLoader(
         dataset_test,
         batch_size=args.batch_size,
         drop_last=False,
         num_workers=args.workers,
     )
-    return loader_test
 
 
 def datasets(args):
-    test = Dataset(
+    return Dataset(
         args,
         images_dir=args.images,
         subset="test",
         image_size=args.image_size,
         random_sampling=False,
     )
-    return test
 
 
 if __name__ == "__main__":

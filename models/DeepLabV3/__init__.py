@@ -4,8 +4,10 @@ from torchvision import models
 
 
 class Deeplabv3_ResNet50(nn.Module):
+    net_name = "deeplabv3_resnet50"
+
     def __init__(self, in_channels=1, num_classes=3, pretrained=False):
-        super(Deeplabv3_ResNet50, self).__init__()
+        super().__init__()
         self.deeplabv3 = models.segmentation.deeplabv3_resnet50(
             pretrained=pretrained, num_classes=num_classes
         )
@@ -22,8 +24,10 @@ class Deeplabv3_ResNet50(nn.Module):
 
 
 class Deeplabv3_ResNet101(nn.Module):
+    net_name = "deeplabv3_resnet101"
+
     def __init__(self, in_channels=1, num_classes=3, pretrained=False):
-        super(Deeplabv3_ResNet101, self).__init__()
+        super().__init__()
         self.deeplabv3 = models.segmentation.deeplabv3_resnet101(
             pretrained=pretrained, num_classes=num_classes
         )

@@ -48,6 +48,8 @@ class PSPUpsample(nn.Module):
 
 
 class PSPNet(nn.Module):
+    net_name = "pspnet"
+
     def __init__(
         self,
         num_classes=18,

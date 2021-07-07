@@ -3,8 +3,10 @@ import torch.nn as nn
 
 
 class PreactResUNet(nn.Module):
+    net_name = "preactivation_resunet"
+
     def __init__(self, in_channels=3, num_classes=1, init_features=32):
-        super(PreactResUNet, self).__init__()
+        super().__init__()
 
         features = init_features
         self.encoder1 = FirstResidualBlock(in_channels, features)
@@ -39,8 +41,6 @@ class PreactResUNet(nn.Module):
             in_channels=features, out_channels=num_classes, kernel_size=1
         )
 
-    net_name = "preactivation_resunet"
-
     def forward(self, x):
         enc1 = self.encoder1(x)
         enc2 = self.encoder2(self.pool1(enc1))
@@ -66,9 +66,7 @@ class PreactResUNet(nn.Module):
         dec1 = self.decoder1(dec1)
 
         dec1 = self.conv(dec1)
-        out1 = torch.sigmoid(dec1)
-
-        return out1
+        return torch.sigmoid(dec1)
 
 
 def downsample(in_channels, out_channels, stride=1):
@@ -79,7 +77,7 @@ def downsample(in_channels, out_channels, stride=1):
 
 class PreactResidualBlock(nn.Module):
     def __init__(self, in_channels, features):
-        super(PreactResidualBlock, self).__init__()
+        super().__init__()
         self.bn1 = nn.BatchNorm2d(num_features=in_channels)
         self.relu1 = nn.ReLU(inplace=True)
         self.conv1 = nn.Conv2d(
@@ -114,7 +112,7 @@ class PreactResidualBlock(nn.Module):
 
 class FirstResidualBlock(nn.Module):
     def __init__(self, in_channels, features):
-        super(FirstResidualBlock, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(
             in_channels=in_channels,
             out_channels=features,

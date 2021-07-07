@@ -1,8 +1,7 @@
-import argparse
-import yaml
 import os
 import sys
 import inspect
+import argparse
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -11,19 +10,16 @@ sys.path.insert(0, parent_dir)
 from glob import glob
 import numpy as np
 import torch
-import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import StepLR
-from pytorch_model_summary import summary
 
 from models.Classification_model import classification_model
 from binary_classification_dataset import ChromoNonChromoDataset as Dataset
 
 
 def main(args):
-    args.weights_path = "classification_model-20210401T1305"
-    args.weight_num = 41
+    # args.weights_path = "classification_model-20210401T1305"
+    # args.weight_num = 41
 
     if not args.weights_path:
         print("Choose weights path")
@@ -44,7 +40,7 @@ def main(args):
     try:
         model_name = glob(weight_path + "/epoch-{}*".format(args.weight_num))[0]
         state_dict = torch.load(model_name, map_location=device)
-    except:
+    except IndexError:
         print("Weight file is not found!")
         sys.exit()
 
@@ -65,7 +61,7 @@ def main(args):
     true_nonchromosome = 0
     false_nonchromosome = 0
 
-    for i, datum in enumerate(loaders["test"], 0):
+    for _, datum in enumerate(loaders["test"], 0):
         data, y_true = datum
         data, y_true = data.to(device, dtype=torch.float), y_true.to(
             device, dtype=torch.float
@@ -78,7 +74,7 @@ def main(args):
             sm = nn.Softmax(dim=1)
             pred_percentage = sm(y_pred)
 
-            final_percentage, preds = torch.max(pred_percentage, 1)
+            _, preds = torch.max(pred_percentage, 1)
             total += y_true.size(0)
             correct += (preds == y_true).sum().item()
 
@@ -93,11 +89,10 @@ def main(args):
                         true_chromosome += 1
                     else:
                         false_chromosome += 1
+                elif y_true_np[img_num]:
+                    false_nonchromosome += 1
                 else:
-                    if y_true_np[img_num]:
-                        false_nonchromosome += 1
-                    else:
-                        true_nonchromosome += 1
+                    true_nonchromosome += 1
                 test_img_num += 1
 
             total_loss.append(loss.item())
@@ -111,18 +106,16 @@ def main(args):
 
 def data_loaders(args):
     dataset_test = datasets(args)
-    loader_test = DataLoader(
+    return DataLoader(
         dataset_test,
         batch_size=args.batch_size,
         drop_last=False,
         num_workers=args.workers,
     )
-    return loader_test
 
 
 def datasets(args):
-    test = Dataset(file_dir=args.test_data, subset="test")
-    return test
+    return Dataset(file_dir=args.test_data, subset="test")
 
 
 if __name__ == "__main__":

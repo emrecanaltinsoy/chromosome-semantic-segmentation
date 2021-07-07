@@ -3,8 +3,10 @@ import torch.nn as nn
 
 
 class ResUNet(nn.Module):
+    net_name = "resunet"
+
     def __init__(self, in_channels=3, num_classes=1, init_features=32):
-        super(ResUNet, self).__init__()
+        super().__init__()
 
         features = init_features
         self.encoder1 = ResidualBlock(in_channels, features)
@@ -39,8 +41,6 @@ class ResUNet(nn.Module):
             in_channels=features, out_channels=num_classes, kernel_size=1
         )
 
-    net_name = "resunet"
-
     def forward(self, x):
         enc1 = self.encoder1(x)
         enc2 = self.encoder2(self.pool1(enc1))
@@ -66,9 +66,7 @@ class ResUNet(nn.Module):
         dec1 = self.decoder1(dec1)
 
         dec1 = self.conv(dec1)
-        out1 = torch.sigmoid(dec1)
-
-        return out1
+        return torch.sigmoid(dec1)
 
 
 def downsample(in_channels, out_channels, stride=1):
@@ -79,7 +77,7 @@ def downsample(in_channels, out_channels, stride=1):
 
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels, features):
-        super(ResidualBlock, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(
             in_channels=in_channels,
             out_channels=features,

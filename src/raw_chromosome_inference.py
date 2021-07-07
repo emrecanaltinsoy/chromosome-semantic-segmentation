@@ -31,12 +31,12 @@ from models.PSPNet import PSPNet
 
 
 def main(args):
-    args.model = "preactivation_resunet"
-    args.model_path = "preactivation_resunet-20210401T1308"
-    args.weight_num = 1
-    args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
-    args.batch_size = 2
-    args.test_results = False
+    # args.model = "preactivation_resunet"
+    # args.model_path = "preactivation_resunet-20210416T1703"
+    # args.weight_num = 1
+    # args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
+    # args.batch_size = 2
+    # args.test_results = False
 
     if args.model == "unet":
         model = UNet(
@@ -102,9 +102,7 @@ def main(args):
 
     dsc = DiceLoss()
 
-    evaluations = evals()
     evaluations_np = []
-
     total_dsc_loss = []
 
     loader = data_loaders(args)
@@ -125,7 +123,7 @@ def main(args):
             y_pred = model(x)
             dsc_loss = dsc(y_pred, y_true)
 
-            evaluations_ = evaluations(y_pred, y_true)
+            evaluations_ = evals(y_pred, y_true)
             evaluations_np += evaluations_
 
             total_dsc_loss.append(dsc_loss.item())
@@ -175,24 +173,22 @@ def main(args):
 
 def data_loaders(args):
     dataset_test = datasets(args)
-    loader_test = DataLoader(
+    return DataLoader(
         dataset_test,
         batch_size=args.batch_size,
         drop_last=False,
         num_workers=args.workers,
     )
-    return loader_test
 
 
 def datasets(args):
-    test = Dataset(
+    return Dataset(
         args,
         images_dir=args.images,
         subset="test",
         image_size=args.image_size,
         random_sampling=False,
     )
-    return test
 
 
 if __name__ == "__main__":

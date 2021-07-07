@@ -1,8 +1,9 @@
-import argparse
-import yaml
 import os
 import inspect
 import sys
+
+import argparse
+import yaml
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -37,58 +38,48 @@ def main(args):
             num_classes=Dataset.num_classes,
             init_features=args.init_features,
         )
-        net_name = "unet"
     elif args.model == "resunet":
         model = ResUNet(
             in_channels=Dataset.in_channels,
             num_classes=Dataset.num_classes,
             init_features=args.init_features,
         )
-        net_name = "resunet"
     elif args.model == "preactivation_resunet":
         model = PreactResUNet(
             in_channels=Dataset.in_channels,
             num_classes=Dataset.num_classes,
             init_features=args.init_features,
         )
-        net_name = "preactivation_resunet"
     elif args.model == "cenet":
         model = CE_Net(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = "cenet"
     elif args.model == "segnet":
         model = SegNet(in_channels=Dataset.in_channels, num_classes=Dataset.num_classes)
-        net_name = "segnet"
     elif args.model == "nested_unet":
         model = UNet_Nested(
             in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
         )
-        net_name = "nested_unet"
     elif args.model == "attention_unet":
         model = AttU_Net(
             in_channels=Dataset.in_channels, num_classes=Dataset.num_classes
         )
-        net_name = "attention_unet"
     elif args.model == "fcn_resnet101":
         model = FCN_ResNet101(
             in_channels=Dataset.in_channels,
             num_classes=Dataset.num_classes,
             pretrained=args.pretrained,
         )
-        net_name = "fcn_resnet101"
     elif args.model == "deeplabv3_resnet101":
         model = Deeplabv3_ResNet101(
             in_channels=Dataset.in_channels,
             num_classes=Dataset.num_classes,
             pretrained=args.pretrained,
         )
-        net_name = "deeplabv3_resnet101"
     elif args.model == "pspnet":
         model = PSPNet(
             num_classes=Dataset.num_classes,
             pretrained=args.pretrained,
             backend="resnet101",
         )
-        net_name = "pspnet"
 
     print(
         summary(
@@ -151,7 +142,7 @@ def main(args):
             elif phase == "valid":
                 model.eval()
 
-            for i, data in enumerate(loaders[phase], 0):
+            for _, data in enumerate(loaders[phase], 0):
 
                 x, y_true = data
 

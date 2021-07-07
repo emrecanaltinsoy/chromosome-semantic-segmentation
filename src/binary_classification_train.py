@@ -1,9 +1,10 @@
-import argparse
-import yaml
 import os
-import numpy as np
 import sys
 import inspect
+
+import argparse
+import yaml
+import numpy as np
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -79,7 +80,7 @@ def main(args):
             elif phase == "valid":
                 model.eval()
 
-            for i, datum in enumerate(loaders[phase], 0):
+            for _, datum in enumerate(loaders[phase], 0):
 
                 data, y_true = datum
 

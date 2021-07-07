@@ -1,7 +1,8 @@
-import tensorflow as tf
 import os
-import yaml
 import glob
+
+import tensorflow as tf
+import yaml
 
 files = glob.glob("./scalar/**/event*", recursive=True)
 
@@ -20,7 +21,7 @@ for f in files:
                 if i > 40:
                     break
                 loss[i] = v.simple_value
-            if v.tag == "orig_val_loss":
+            elif v.tag == "orig_val_loss":
                 if i > 40:
                     break
                 val_loss[i] = v.simple_value

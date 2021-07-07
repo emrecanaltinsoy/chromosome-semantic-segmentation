@@ -4,8 +4,10 @@ from torchvision import models
 
 
 class FCN_ResNet50(nn.Module):
+    net_name = "fcn_resnet50"
+
     def __init__(self, in_channels=1, num_classes=3, pretrained=False):
-        super(FCN_ResNet50, self).__init__()
+        super().__init__()
         self.fcn = models.segmentation.fcn_resnet50(
             pretrained=pretrained, num_classes=num_classes
         )
@@ -22,8 +24,10 @@ class FCN_ResNet50(nn.Module):
 
 
 class FCN_ResNet101(nn.Module):
+    net_name = "fcn_resnet101"
+
     def __init__(self, in_channels=1, num_classes=3, pretrained=False):
-        super(FCN_ResNet101, self).__init__()
+        super().__init__()
         self.fcn = models.segmentation.fcn_resnet101(
             pretrained=pretrained, num_classes=num_classes
         )
