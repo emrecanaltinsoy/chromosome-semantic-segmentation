@@ -15,7 +15,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from pytorch_model_summary import summary
 
-from raw_chromosome_dataset import RawChromosomeDataset as Dataset
+import torch_xla
+import torch_xla.core.xla_model as xm
+
+from segmentation_dataset import RawChromosomeDataset as Dataset
 from logger import Logger
 from loss import DiceLoss, jaccard_distance_loss
 
@@ -90,7 +93,7 @@ def main(args):
         )
     )
     # print('number of parameters = ', sum(p.numel() for p in model.parameters()))
-    device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
+    device = xm.xla_device()
     model.to(device)
 
     if args.weights == "":
@@ -184,7 +187,7 @@ def main(args):
 
                         orig_loss.backward()
 
-                        optimizer.step()
+                        xm.optimizer_step(optimizer, barrier=True)
                         if (step) % 4 == 0:
                             train_step += 1
                             print(

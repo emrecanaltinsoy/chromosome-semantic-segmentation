@@ -19,7 +19,7 @@ from pytorch_model_summary import summary
 
 from logger import Logger
 from models.Classification_model import classification_model
-from binary_classification_dataset import ChromoNonChromoDataset as Dataset
+from classification_dataset import ChromoNonChromoDataset as Dataset
 
 
 def main(args):
@@ -219,7 +219,7 @@ def save_args(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Semantic segmentation of G-banding chromosome Images"
+        description="Classification of chromosome and non-chromosome objects"
     )
     parser.add_argument(
         "--batch-size",

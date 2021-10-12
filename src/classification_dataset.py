@@ -13,11 +13,8 @@ import numpy as np
 import torch
 from skimage.io import imread
 from torch.utils.data import Dataset
-import matplotlib.pyplot as plt
 
 import pandas as pd
-
-from utils import adjustData
 
 
 class ChromoNonChromoDataset(Dataset):
@@ -31,7 +28,6 @@ class ChromoNonChromoDataset(Dataset):
         self,
         file_dir,
         subset="train",
-        random_sampling=True,
         seed=42,
     ):
         assert subset in ["train", "validation", "test"]

@@ -1,9 +1,10 @@
-import argparse
-import yaml
 import os
-from glob import glob
 import inspect
 import sys
+
+import argparse
+import yaml
+from glob import glob
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
@@ -15,7 +16,10 @@ import torch
 from torch.utils.data import DataLoader
 import skimage.io as io
 
-from raw_chromosome_dataset import RawChromosomeDataset as Dataset
+import torch_xla
+import torch_xla.core.xla_model as xm
+
+from segmentation_dataset import RawChromosomeDataset as Dataset
 from loss import DiceLoss, evals
 
 from models.UNet import UNet
@@ -32,11 +36,11 @@ from models.PSPNet import PSPNet
 
 def main(args):
     # args.model = "preactivation_resunet"
-    # args.model_path = "preactivation_resunet-20210416T1703"
+    # args.model_path = "preactivation_resunet-20210331T2226"
     # args.weight_num = 1
     # args.images = "./datasets/raw_chromosome_data".format(Dataset.name)
     # args.batch_size = 2
-    # args.test_results = False
+    # args.test_results = True
 
     if args.model == "unet":
         model = UNet(
@@ -87,7 +91,7 @@ def main(args):
         )
         net_name = "pspnet"
 
-    device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
+    device = xm.xla_device()
     model.to(device)
 
     weights_dir = "output/{}/{}/weights".format(Dataset.name, args.model_path)
@@ -102,7 +106,9 @@ def main(args):
 
     dsc = DiceLoss()
 
+    evaluations = evals()
     evaluations_np = []
+
     total_dsc_loss = []
 
     loader = data_loaders(args)
@@ -123,7 +129,7 @@ def main(args):
             y_pred = model(x)
             dsc_loss = dsc(y_pred, y_true)
 
-            evaluations_ = evals(y_pred, y_true)
+            evaluations_ = evaluations(y_pred, y_true)
             evaluations_np += evaluations_
 
             total_dsc_loss.append(dsc_loss.item())

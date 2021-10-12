@@ -14,7 +14,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from models.Classification_model import classification_model
-from binary_classification_dataset import ChromoNonChromoDataset as Dataset
+from classification_dataset import ChromoNonChromoDataset as Dataset
 
 
 def main(args):

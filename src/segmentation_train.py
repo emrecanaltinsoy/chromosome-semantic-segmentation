@@ -15,10 +15,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from pytorch_model_summary import summary
 
-import torch_xla
-import torch_xla.core.xla_model as xm
-
-from raw_chromosome_dataset import RawChromosomeDataset as Dataset
+from segmentation_dataset import RawChromosomeDataset as Dataset
 from logger import Logger
 from loss import DiceLoss, jaccard_distance_loss
 
@@ -93,7 +90,7 @@ def main(args):
         )
     )
     # print('number of parameters = ', sum(p.numel() for p in model.parameters()))
-    device = xm.xla_device()
+    device = torch.device("cpu" if not torch.cuda.is_available() else args.device)
     model.to(device)
 
     if args.weights == "":
@@ -187,7 +184,7 @@ def main(args):
 
                         orig_loss.backward()
 
-                        xm.optimizer_step(optimizer, barrier=True)
+                        optimizer.step()
                         if (step) % 4 == 0:
                             train_step += 1
                             print(
@@ -346,13 +343,13 @@ if __name__ == "__main__":
         "--model",
         type=str,
         default="preactivation_resunet",
-        help="choose model",
+        help="choose model to train",
     )
     parser.add_argument(
         "--pretrained",
         type=bool,
         default=False,
-        help="is the backbone pretrained of not",
+        help="is the backbone pretrained or not",
     )
     parser.add_argument(
         "--batch-size",
@@ -393,7 +390,7 @@ if __name__ == "__main__":
         "--images",
         type=str,
         default="./datasets/{}_data".format(Dataset.name),
-        help="root folder with images",
+        help="dataset folder directory",
     )
     parser.add_argument(
         "--image-size",

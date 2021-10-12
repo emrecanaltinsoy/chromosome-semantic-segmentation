@@ -1,25 +1,32 @@
-# Chromosome Segmentation
+# Chromosome Semantic Segmentation
 
-# Setup Environment
+<details>
+    <summary>Citation</summary>
+    
+If you use the proposed model in your research or wish to refer to the results published, please use the following BibTeX entry.
+
+    @article{altinsoy2021improved,
+        title={An improved denoising of G-banding chromosome images using cascaded CNN and binary classification network},
+        author={Altinsoy, Emrecan and Yang, Jie and Tu, Enmei},
+        journal={The Visual Computer},
+        pages={1--14},
+        year={2021},
+        publisher={Springer}
+    }
+</details>
+<!--  -->
+
+<details>
+<summary>Setup Environment</summary>
 
 ## Cuda and cuDNN Version
 
-Cuda 10.2
-
-Cudnn v8.1.0.77
-
-## Create Conda Environment using environment.yml
-```bash
-conda env create -f environment.yml
-```
-or
-```bash
-conda env create -n <env-name> -f environment.yml
-```
+- Cuda 10.2
+- Cudnn v8.1.0.77
 
 ## Create Conda Environment and Install Libraries 
 ```bash
-conda create -n <your_env_name> python=3.7
+conda create -n <your_env_name> python=3.8
 ```
 
 ```bash
@@ -47,8 +54,100 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 ```bash
 !pip install cloud-tpu-client==0.10 https://storage.googleapis.com/tpu-pytorch/wheels/torch_xla-1.8-cp37-cp37m-linux_x86_64.whl
 ```
+</details>
+<!--  -->
 
-# Results
+<details>
+<summary>Dataset Preparation</summary>
+
+### Classification data preparation
+Before running classification_train.py, classification data needs to be created. To create the classification dataset, you need to run classification_data_prep.py file. Run the following command to see the details of the arguments.
+
+```
+python3 ./src/classification_data_prep.py -h 
+```
+
+### Example
+```
+python3 ./src/classification_data_prep.py --model=preactivation_resunet --weight-path=preactivation_resunet-20211012T1603 --weight-num=40 --images='datasets/raw_chromosome_data/'
+```
+
+</details>
+<!--  -->
+
+<details>
+<summary>Training</summary>
+
+
+### Segmentation arguments
+```
+usage: ./src/segmentation_train.py [-h] [--model MODEL] [--pretrained PRETRAINED]
+                               [--batch-size BATCH_SIZE] [--epochs EPOCHS]
+                               [--lr LR] [--device DEVICE] [--workers WORKERS]
+                               [--weights WEIGHTS] [--test TEST] [--logs LOGS]
+                               [--images IMAGES] [--image-size IMAGE_SIZE]
+                               [--init-features INIT_FEATURES]
+
+Semantic segmentation of G-banding chromosome Images
+
+optional arguments:
+  -h, --help                        show this help message and exit
+  --model MODEL                     choose model to train
+  --pretrained PRETRAINE            is the backbone pretrained or not
+  --batch-size BATCH_SIZ            input batch size for training (default: 2)
+  --epochs EPOCHS                   number of epochs to train (default: 40)
+  --lr LR                           initial learning rate (default: 0.0001)
+  --device DEVICE                   device for training (default: cuda:0)
+  --workers WORKERS                 number of workers for data loading (default: 0)
+  --weights WEIGHTS                 folder to save weights
+  --test TEST                       folder to save weights
+  --logs LOGS                       folder to save logs
+  --images IMAGES                   dataset folder directory
+  --image-size IMAGE_SIZE           target input image size (default: 480x640)
+  --init-features INIT_FEATURES     init features for unet, resunet, preact-resunet
+
+available models:
+    unet, resunet, preactivation_resunet, cenet, segnet, nested_unet, 
+    attention_unet, fcn_resnet101, deeplabv3_resnet101, pspnet
+```
+
+### Classification arguments
+```
+usage: classification_train.py [-h] [--batch-size BATCH_SIZE]
+                                      [--epochs EPOCHS] [--lr LR]
+                                      [--device DEVICE] [--workers WORKERS]
+                                      [--weights WEIGHTS] [--logs LOGS]
+                                      [--train-data TRAIN_DATA]
+                                      [--validation-data VALIDATION_DATA]
+
+Classification of chromosome and non-chromosome objects
+
+optional arguments:
+  -h, --help                            show this help message and exit
+  --batch-size BATCH_SIZE               input batch size for training (default: 20)
+  --epochs EPOCHS                       number of epochs to train (default: 100)
+  --lr LR                               initial learning rate (default: 0.0001)
+  --device DEVICE                       device for training (default: cuda:0)
+  --workers WORKERS                     number of workers for data loading (default: 0)
+  --weights WEIGHTS                     folder to save weights
+  --logs LOGS                           folder to save logs
+  --train-data TRAIN_DATA               directory of training data
+  --validation-data VALIDATION_DATA     directory of validation data
+```
+
+### Segmentation training example
+```
+python3 ./src/segmentation_train.py --images='datasets/raw_chromosome_data/' --model='unet' --epochs=50 --batch-size=4
+```
+### Classification training example
+```
+python3 ./src/classification_train.py --train-data=datasets/binary_classification_data/train_data.csv --validation-data=datasets/binary_classification_data/valid_data.csv --epochs=100 --batch-size=40
+```
+</details>
+<!--  -->
+
+<details>
+<summary>Results</summary>
 
 |  |  |
 |:-----------------------:|:-----------------------:|
@@ -113,4 +212,5 @@ To use cloud TPU run the code below to install torch_xla before running the tpu_
 | Proposed CNN (t=131) |![](./assets/comparison/proposed_cnn/0_proposed_cnn.png) | ![](./assets/comparison/proposed_cnn/10_proposed_cnn.png) | ![](./assets/comparison/proposed_cnn/12_proposed_cnn.png) | ![](./assets/comparison/proposed_cnn/18_proposed_cnn.png) |
 | Proposed CNN+BCN |![](./assets/comparison/proposed_cnn_bcn/0_proposed_cnn_bcn.png) | ![](./assets/comparison/proposed_cnn_bcn/10_proposed_cnn_bcn.png) | ![](./assets/comparison/proposed_cnn_bcn/12_proposed_cnn_bcn.png) | ![](./assets/comparison/proposed_cnn_bcn/18_proposed_cnn_bcn.png) |
 
+</details>
 
